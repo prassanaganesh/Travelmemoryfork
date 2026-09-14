@@ -97,11 +97,13 @@ EC2 Instance:
 
 Test web-server communication & private database server:
 
-<img width="990" height="860" alt="image" src="https://github.com/user-attachments/assets/7325a418-5a68-498e-94df-2bcf7ca5d090" />
+<img width="1492" height="446" alt="image" src="https://github.com/user-attachments/assets/2332b30f-076a-4895-9c9b-c7c0cd440e95" />
 
 MongoDB Ansible playbook:
 
-<img width="1492" height="446" alt="image" src="https://github.com/user-attachments/assets/2332b30f-076a-4895-9c9b-c7c0cd440e95" />
+<img width="990" height="860" alt="image" src="https://github.com/user-attachments/assets/7325a418-5a68-498e-94df-2bcf7ca5d090" />
+
+
 
 
 
