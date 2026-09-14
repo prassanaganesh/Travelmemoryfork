@@ -47,3 +47,24 @@ cd frontend
 npm install
 npm start
 ```
+
+
+
+
+
+
+
+
+Prerequisites:
+```bash
+
+aws --version
+terraform --version
+ansible --version
+```
+
+<img width="1315" height="385" alt="image" src="https://github.com/user-attachments/assets/d9f39695-e8ca-4a57-af99-dc19dff99206" />
+
+
+
+
