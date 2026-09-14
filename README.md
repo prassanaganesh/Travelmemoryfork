@@ -88,6 +88,21 @@ VPC:
 Subnets:
 <img width="1911" height="515" alt="image" src="https://github.com/user-attachments/assets/4627a062-9f14-482f-957c-76b7bcd7a8d8" />
 
+NAT:
+<img width="1910" height="645" alt="image" src="https://github.com/user-attachments/assets/0f58f8f7-48dc-4ba2-aabf-a7b769dcf5e4" />
+
+EC2 Instance:
+
+<img width="1907" height="727" alt="image" src="https://github.com/user-attachments/assets/d1950b19-7934-45a9-a85b-9f013572f998" />
+
+Test web-server communication & private database server:
+
+<img width="990" height="860" alt="image" src="https://github.com/user-attachments/assets/7325a418-5a68-498e-94df-2bcf7ca5d090" />
+
+MongoDB Ansible playbook:
+
+<img width="1492" height="446" alt="image" src="https://github.com/user-attachments/assets/2332b30f-076a-4895-9c9b-c7c0cd440e95" />
+
 
 
 
