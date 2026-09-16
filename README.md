@@ -103,7 +103,18 @@ MongoDB Ansible playbook:
 
 <img width="990" height="860" alt="image" src="https://github.com/user-attachments/assets/7325a418-5a68-498e-94df-2bcf7ca5d090" />
 
+Verify MongoDB connection
 
+<img width="1467" height="202" alt="image" src="https://github.com/user-attachments/assets/1268051b-808e-44ab-87f5-cb220e0a3b6e" />
+
+
+<img width="1912" height="1005" alt="image" src="https://github.com/user-attachments/assets/8bde758f-d040-421b-91b0-61e431c2109e" />
+
+
+<img width="1897" height="1015" alt="image" src="https://github.com/user-attachments/assets/c033c952-2de8-4e88-b94c-74d86ef2b20a" />
+
+Ansible Vault for passwords
+<img width="1476" height="265" alt="image" src="https://github.com/user-attachments/assets/1d891635-8f8d-4308-ae64-1666d92b97bc" />
 
 
 
