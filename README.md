@@ -63,7 +63,6 @@ This project demonstrates the deployment of a **MERN (MongoDB, Express.js, React
 - Nginx for frontend hosting and reverse proxy
 - systemd for backend process management
 - AWS Security Groups for network security
-- UFW for host-level firewall protection
 - AWS IAM for EC2 permissions
 - NAT Gateway for private subnet outbound internet access
 
