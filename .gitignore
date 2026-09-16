@@ -1,4 +1,6 @@
+# =========================================================
 # Terraform
+# =========================================================
 **/.terraform/
 **/*.tfstate
 **/*.tfstate.*
@@ -12,31 +14,119 @@ crash.*.log
 # Terraform lock file should be committed
 !**/.terraform.lock.hcl
 
+
+# =========================================================
 # Ansible
+# =========================================================
 **/*.retry
 
-# Ansible Vault
+# Ansible Vault password files / unencrypted vault files
 **/vault_password_file
 **/*vault*.yml
 **/*vault*.yaml
 
-# SSH / private keys
+
+# =========================================================
+# SSH / Private Keys
+# =========================================================
 *.pem
 *.key
 id_rsa
 id_rsa.pub
 
-# Environment / secrets
+
+# =========================================================
+# Environment / Secrets
+# =========================================================
 .env
 .env.*
 !.env.example
 
-# OS/editor files
+
+# =========================================================
+# Node.js / npm
+# =========================================================
+node_modules/
+jspm_packages/
+web_modules/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+.npm
+.eslintcache
+.stylelintcache
+.node_repl_history
+
+# Package/build artifacts
+*.tgz
+.yarn-integrity
+.pnp.*
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Build output
+dist/
+build/Release
+
+# Frontend/framework caches
+.cache/
+.parcel-cache/
+.next/
+out/
+.nuxt/
+.vuepress/dist
+.temp/
+.docusaurus/
+.serverless/
+.dynamodb/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_umd/
+.rts2_cache_es/
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+lib-cov/
+
+# Misc Node tooling
+.grunt
+bower_components/
+.lock-wscript
+.tern-port
+.pnp.*
+
+
+# =========================================================
+# Runtime / Diagnostic files
+# =========================================================
+logs
+pids
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+
+# =========================================================
+# IDE / OS
+# =========================================================
+.vscode-test
 .DS_Store
 Thumbs.db
 *.swp
 *.swo
 *~
 
+
+# =========================================================
 # Backup files
+# =========================================================
 *.backup
