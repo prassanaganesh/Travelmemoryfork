@@ -1,0 +1,264 @@
+---
+- name: Configure TravelMemory Web Server
+  hosts: web
+  become: true
+
+  vars:
+    app_dir: /opt/travelmemory
+    node_version: "20"
+
+    mongo_host: "{{ hostvars[groups['database'][0]]['ansible_host'] }}"
+    mongo_port: "27017"
+
+    backend_port: "5000"
+
+  tasks:
+
+    # ---------------------------------------------------------
+    # System packages
+    # ---------------------------------------------------------
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name:
+          - git
+          - curl
+          - nginx
+          - build-essential
+        state: present
+
+
+    # ---------------------------------------------------------
+    # Node.js
+    # ---------------------------------------------------------
+
+    - name: Download NodeSource setup script
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_{{ node_version }}.x -o /tmp/nodesource_setup.sh
+      args:
+        creates: /tmp/nodesource_setup.sh
+
+    - name: Run NodeSource setup script
+      shell: |
+        bash /tmp/nodesource_setup.sh
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+
+
+    # ---------------------------------------------------------
+    # Verify Node.js
+    # ---------------------------------------------------------
+
+    - name: Check Node.js version
+      command: node --version
+      register: node_version_output
+      changed_when: false
+
+    - name: Display Node.js version
+      debug:
+        msg: "Node.js version: {{ node_version_output.stdout }}"
+
+
+    # ---------------------------------------------------------
+    # Application directory
+    # ---------------------------------------------------------
+
+    - name: Create application directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+
+
+    # ---------------------------------------------------------
+    # Clone TravelMemory application
+    # ---------------------------------------------------------
+
+    - name: Clone TravelMemory repository
+      git:
+        repo: "https://github.com/UnpredictablePrashant/TravelMemory.git"
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+      become_user: ubuntu
+
+
+    # ---------------------------------------------------------
+    # Install backend dependencies
+    # ---------------------------------------------------------
+
+    - name: Install backend dependencies
+      npm:
+        path: "{{ app_dir }}/backend"
+        production: yes
+      become_user: ubuntu
+
+
+    # ---------------------------------------------------------
+    # Configure backend environment
+    # ---------------------------------------------------------
+
+    - name: Create backend environment file
+      copy:
+        dest: "{{ app_dir }}/backend/.env"
+        owner: ubuntu
+        group: ubuntu
+        mode: "0600"
+        content: |
+          PORT={{ backend_port }}
+          MONGO_URI=mongodb://{{ mongo_app_user }}:{{ mongo_app_password }}@{{ mongo_host }}:{{ mongo_port }}/{{ mongo_database }}?authSource={{ mongo_database }}
+
+
+    # ---------------------------------------------------------
+    # Install frontend dependencies
+    # ---------------------------------------------------------
+
+    - name: Install frontend dependencies
+      npm:
+        path: "{{ app_dir }}/frontend"
+      become_user: ubuntu
+
+
+    # ---------------------------------------------------------
+    # Build React frontend
+    # ---------------------------------------------------------
+
+    - name: Build frontend application
+      command:
+        cmd: npm run build
+        chdir: "{{ app_dir }}/frontend"
+      become_user: ubuntu
+
+
+    # ---------------------------------------------------------
+    # Configure Nginx
+    # ---------------------------------------------------------
+
+    - name: Create Nginx configuration
+      copy:
+        dest: /etc/nginx/sites-available/travelmemory
+        mode: "0644"
+        content: |
+          server {
+              listen 80;
+              server_name _;
+
+              root {{ app_dir }}/frontend/build;
+              index index.html;
+
+              location / {
+                  try_files $uri $uri/ /index.html;
+              }
+
+              location /api/ {
+                  proxy_pass http://127.0.0.1:{{ backend_port }}/;
+                  proxy_http_version 1.1;
+
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+
+
+    - name: Enable TravelMemory Nginx site
+      file:
+        src: /etc/nginx/sites-available/travelmemory
+        dest: /etc/nginx/sites-enabled/travelmemory
+        state: link
+        force: yes
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+
+    # ---------------------------------------------------------
+    # Validate Nginx
+    # ---------------------------------------------------------
+
+    - name: Test Nginx configuration
+      command:
+        cmd: nginx -t
+      register: nginx_test
+      changed_when: false
+
+    - name: Restart Nginx
+      systemd:
+        name: nginx
+        enabled: yes
+        state: restarted
+
+
+    # ---------------------------------------------------------
+    # Backend systemd service
+    # ---------------------------------------------------------
+
+    - name: Create TravelMemory backend systemd service
+      copy:
+        dest: /etc/systemd/system/travelmemory-backend.service
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=TravelMemory Backend
+          After=network.target
+
+          [Service]
+          Type=simple
+          User=ubuntu
+          WorkingDirectory={{ app_dir }}/backend
+          EnvironmentFile={{ app_dir }}/backend/.env
+          ExecStart=/usr/bin/node index.js
+          Restart=always
+          RestartSec=5
+
+          [Install]
+          WantedBy=multi-user.target
+
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable TravelMemory backend
+      systemd:
+        name: travelmemory-backend
+        enabled: yes
+        state: started
+
+
+    # ---------------------------------------------------------
+    # Wait for backend
+    # ---------------------------------------------------------
+
+    - name: Wait for backend port
+      wait_for:
+        host: 127.0.0.1
+        port: "{{ backend_port }}"
+        timeout: 60
+
+
+    # ---------------------------------------------------------
+    # Final status
+    # ---------------------------------------------------------
+
+    - name: Display application information
+      debug:
+        msg:
+          - "TravelMemory deployment completed"
+          - "Application directory: {{ app_dir }}"
+          - "Backend port: {{ backend_port }}"
+          - "MongoDB host: {{ mongo_host }}"
+          - "Access application using the Web EC2 public IP on port 80"

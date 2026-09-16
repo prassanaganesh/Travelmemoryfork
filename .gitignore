@@ -1,0 +1,42 @@
+# Terraform
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfvars
+**/*.tfvars.json
+**/tfplan
+**/*.tfplan
+crash.log
+crash.*.log
+
+# Terraform lock file should be committed
+!**/.terraform.lock.hcl
+
+# Ansible
+**/*.retry
+
+# Ansible Vault
+**/vault_password_file
+**/*vault*.yml
+**/*vault*.yaml
+
+# SSH / private keys
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
